@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#172033">
+<title>Transformation OS</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#172033;--muted:#65718a;--line:#e3e8f0;--accent:#3157c8;--soft:#edf1ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:#172033;color:white;padding:22px 18px 18px}header h1{margin:0;font-size:23px}header p{margin:6px 0 0;color:#cbd3e2}
+nav{display:flex;gap:7px;overflow:auto;padding:10px;background:#fff;position:sticky;top:0;z-index:3;border-bottom:1px solid var(--line)}
+nav button{border:0;background:#f0f2f7;color:#35415a;padding:9px 12px;border-radius:10px;white-space:nowrap;font-weight:650}
+nav button.active{background:var(--accent);color:#fff}
+main{max-width:850px;margin:auto;padding:16px}.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;margin:0 0 13px;box-shadow:0 2px 8px #1b2b4b08}
+h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:14px 0 8px}
+.muted,.hint{color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.stat{background:var(--soft);padding:12px;border-radius:12px}.stat b{display:block;font-size:21px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}
+label{display:block;font-weight:550}.row label{font-weight:500}
+input[type=number],input[type=text],input[type=time],textarea,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font:inherit}
+input[type=checkbox]{width:19px;height:19px;accent-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.field{margin:9px 0}
+button.primary{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:11px 15px;font-weight:700}
+button.secondary{background:#eef1f7;color:var(--ink);border:0;border-radius:9px;padding:9px 12px}
+.progress{height:9px;background:#e8ecf4;border-radius:20px;overflow:hidden;margin:8px 0}.progress span{display:block;height:100%;background:var(--accent);width:0}
+.splitbox{background:#f7f8fc;border:1px solid var(--line);border-radius:12px;padding:12px;margin:12px 0}.exercise{display:grid;grid-template-columns: minmax(130px,190px) 1fr;gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.exercise:last-child{border:0}.exercise-art{background:linear-gradient(145deg,#edf2fb,#f8f9fc);border:1px solid #dce4f1;border-radius:12px;padding:6px;display:flex;align-items:center;justify-content:center;min-height:145px}.exercise-art svg{display:block;width:100%;height:140px}.small{font-size:12px;color:var(--muted)}.pill{display:inline-block;background:#edf1ff;color:#2848a6;padding:4px 8px;border-radius:20px;font-size:12px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(min-width:650px){.stats{grid-template-columns:repeat(4,1fr)}}
+</style></head>
+<body>
+<header><h1>My Transformation OS</h1><p>Study • Strength • Nutrition • Discipline • Recovery</p></header>
+<nav id="tabs">
+<button class="active" data-tab="today">Today</button><button data-tab="timetable">Timetable</button><button data-tab="study">Study</button><button data-tab="fitness">Workout</button><button data-tab="nutrition">Nutrition</button><button data-tab="habits">Habits</button><button data-tab="review">Progress</button>
+</nav>
+<main>
+<section id="today" class="panel active">
+<div class="card"><h2>Daily overview</h2><div class="stats">
+<div class="stat"><span class="small">Study logged</span><b id="studyStat">0h</b></div>
+<div class="stat"><span class="small">Workout</span><b id="workoutStat">Not done</b></div>
+<div class="stat"><span class="small">Protein</span><b id="proteinStat">0 g</b></div>
+<div class="stat"><span class="small">Screen time</span><b id="screenStat">Not logged</b></div></div>
+<p class="hint">Your target is consistency. Log honestly; do not chase perfect days.</p></div>
+<div class="card"><h2>Today's priorities</h2><div id="todaySubjects"></div>
+<div class="row"><label for="todayWorkout">Complete planned workout</label><input id="todayWorkout" type="checkbox" data-key="todayWorkout"></div>
+<div class="row"><label for="todayProtein">Meet your protein target</label><input id="todayProtein" type="checkbox" data-key="todayProtein"></div>
+<div class="row"><label for="todayPhone">Keep phone use intentional</label><input id="todayPhone" type="checkbox" data-key="todayPhone"></div>
+<div class="row"><label for="todaySleep">Protect 8-9 hours for sleep</label><input id="todaySleep" type="checkbox" data-key="todaySleep"></div></div>
+<div class="card"><h2>Daily reset</h2><p class="muted">At the end of the day, record what happened and choose one improvement for tomorrow.</p><textarea id="dailyNote" rows="3" placeholder="What went well? What needs to change?"></textarea><button class="primary" onclick="saveNote()">Save today's note</button></div>
+</section>
+
+
+<section id="timetable" class="panel">
+<div class="card"><h2>Daily timetable</h2><p class="muted">Vacation routine through 15 November 2026. Study blocks are separated by breaks. Rest after lunch means awake downtime, not a nap.</p>
+<div class="row"><b>7:30 AM</b><span>Wake up, drink water, make bed, brush and freshen up</span></div>
+<div class="row"><b>7:40–7:58 AM</b><span>Workout Part 1: short technique / activation session before breakfast</span></div>
+<div class="row"><b>8:00 AM</b><span>Breakfast and recovery</span></div>
+<div class="row"><b>8:30–10:00 AM</b><span>GPSC focused study</span></div>
+<div class="row"><b>10:00–10:30 AM</b><span>Break, walk and snack</span></div>
+<div class="row"><b>10:30 AM–12:00 PM</b><span>BSc Biotechnology study</span></div>
+<div class="row"><b>12:00–1:00 PM</b><span>Free time and freshen up</span></div>
+<div class="row"><b>1:00–1:30 PM</b><span>Lunch</span></div>
+<div class="row"><b>1:30–2:30 PM</b><span>Awake rest or light leisure, no nap</span></div>
+<div class="row"><b>2:30–4:00 PM</b><span>Separate study block: revision, practice questions or unfinished work</span></div>
+<div class="row"><b>4:00–5:00 PM</b><span>Snack and proper break</span></div>
+<div class="row"><b>5:00–5:30 PM</b><span>Workout Part 2: main strength session, around 4 hours after lunch</span></div>
+<div class="row"><b>6:00–7:00 PM</b><span>Shower, freshen up and personal time</span></div>
+<div class="row"><b>7:00–7:45 PM</b><span>Dinner</span></div>
+<div class="row"><b>7:45–8:30 PM</b><span>Family and personal time</span></div>
+<div class="row"><b>8:30–9:00 PM</b><span>Review what you learned and update your tracker</span></div>
+<div class="row"><b>9:00–9:30 PM</b><span>Prepare tomorrow, set out study materials</span></div>
+<div class="row"><b>9:30 PM</b><span>Put phone away and wind down</span></div>
+<div class="row"><b>10:00 PM</b><span>Sleep</span></div>
+<p class="hint">After college resumes on 16 November, this timetable needs to be changed around your 9 AM–5 PM college hours.</p>
+</div></section>
+
+<section id="study" class="panel">
+<div class="card"><h2>Study system</h2><p class="muted">Long-term target: 6 focused hours/day, building up consistently. Current split target: 3.5h GPSC + 2.5h BSc.</p>
+<div class="grid"><div class="field"><label>GPSC focused minutes</label><input type="number" id="gpscMin" min="0" placeholder="e.g. 90"></div><div class="field"><label>BSc focused minutes</label><input type="number" id="bscMin" min="0" placeholder="e.g. 60"></div></div>
+<div class="field"><label>What did you study?</label><textarea id="studyTopic" rows="2" placeholder="Topic and what you completed"></textarea></div>
+<button class="primary" onclick="saveStudy()">Save study session</button><p id="studyFeedback" class="hint"></p>
+<h3>Weekly subject rotation</h3><div id="rotation"></div>
+</div>
+</section>
+
+<section id="fitness" class="panel">
+<div class="card"><h2>Your home workout plan</h2>
+<p class="muted">Goal: muscular, thick and balanced physique, with extra attention to shoulders, back, chest and arms. Each training day is split into two short sessions: Part 1 at 7:40 AM before breakfast, and Part 2 at 5:00 PM, about four hours after lunch. Do not repeat the same exercises in both sessions.</p>
+<div class="pill" id="workoutDayLabel">Today's plan</div>
+<h3 id="workoutDayTitle">Loading today's workout</h3>
+<p id="workoutDayFocus" class="muted"></p>
+<div class="splitbox"><h3>Part 1 · 7:40–7:58 AM · Before breakfast</h3><p class="muted">Warm-up and first half of today’s plan. Keep this controlled, not exhausting.</p><div id="morningWorkoutList"></div></div><div class="splitbox"><h3>Part 2 · 5:00–5:30 PM · About 4 hours after lunch</h3><p class="muted">Second half of today’s plan. Have your 4 PM snack and water beforehand.</p><div id="eveningWorkoutList"></div></div>
+<p class="hint">The blue clothing and skin-tone human figures show the exercise body position. Match your body to the figure, then follow the written steps. Illustrations are simplified movement guides, not medical form assessment.</p><p class="hint">Warm up for 3–5 minutes before each session: march in place, arm circles, hip hinges and easy squats. Rest 60–120 seconds between hard sets. Stop for sharp pain, dizziness or unusual symptoms. On recovery days, both sessions stay easy. Sunday is rest.</p>
+</div>
+<div class="card"><h2>Weekly schedule</h2>
+<div class="row"><b>Monday</b><span class="muted">Upper A: chest, shoulders, triceps</span></div>
+<div class="row"><b>Tuesday</b><span class="muted">Lower A: legs and core</span></div>
+<div class="row"><b>Wednesday</b><span class="muted">Recovery: easy walk + mobility</span></div>
+<div class="row"><b>Thursday</b><span class="muted">Upper B: back, shoulders, biceps</span></div>
+<div class="row"><b>Friday</b><span class="muted">Lower B + core</span></div>
+<div class="row"><b>Saturday</b><span class="muted">Full body, controlled effort</span></div>
+<div class="row"><b>Sunday</b><span class="muted">Rest and recovery</span></div>
+<p class="hint">This is a seven-day movement routine, not seven hard training days. Recovery is when your body adapts.</p>
+</div>
+<div class="card"><h2>Log today's workout</h2>
+<div class="field"><label>Workout session</label><select id="workoutSession"><option>Part 1 · Morning</option><option>Part 2 · Evening</option><option>Both parts</option><option>Recovery / mobility</option></select></div><div class="field"><label>Workout type</label><select id="workoutType"><option>Upper A</option><option>Lower A</option><option>Recovery / mobility</option><option>Upper B</option><option>Lower B</option><option>Full body</option><option>Rest day</option></select></div>
+<div class="field"><label>Exercises, sets and reps completed</label><textarea id="workoutDetails" rows="3" placeholder="Record what you actually completed"></textarea></div>
+<div class="grid"><div class="field"><label>Duration (minutes)</label><input type="number" id="workoutDuration" min="0"></div><div class="field"><label>Effort (1-10)</label><input type="number" id="workoutEffort" min="1" max="10"></div></div>
+<button class="primary" onclick="saveWorkout()">Log workout</button><p id="workoutFeedback" class="hint"></p>
+<h3>Weekly completion</h3><div id="fitnessChecks"></div>
+</div>
+<div class="card"><h2>How to progress</h2>
+<ul>
+<li>Start with the lower end of each rep range and leave 2-3 good reps in reserve.</li>
+<li>When every set reaches the top of the range with clean form, add 1-2 reps or a little backpack weight.</li>
+<li>For one-sided exercises, complete both sides.</li>
+<li>Keep a note of reps and backpack load so you can beat your previous performance gradually.</li>
+</ul>
+<p class="hint">For the first two weeks, prioritise technique and consistency over intensity.</p></div>
+</section>
+<section id="nutrition" class="panel">
+<div class="card"><h2>Vegetarian nutrition</h2><p class="muted">At 77 kg, a practical muscle-building protein range is roughly 1.2-1.6 g/kg/day (about 92-123 g). Build toward it with normal meals, not extreme dieting.</p>
+<div class="field"><label>Protein eaten today (grams)</label><input type="number" id="protein" min="0" placeholder="Add estimated total"></div>
+<div class="field"><label>Water (litres)</label><input type="number" id="water" min="0" step=".1" placeholder="e.g. 2.5"></div>
+<div class="field"><label>Meals / protein sources</label><textarea id="foodNote" rows="3" placeholder="Milk, curd, paneer, dal, chana, soy, tofu, etc."></textarea></div>
+<button class="primary" onclick="saveNutrition()">Save nutrition log</button>
+<h3>Simple vegetarian protein options</h3><p>Milk, curd/Greek yogurt, paneer, tofu, soy chunks, lentils, chickpeas, beans, and whey if you choose to use it. Distribute protein across meals.</p>
+</div></section>
+
+<section id="habits" class="panel">
+<div class="card"><h2>Focus and self-control</h2><p class="muted">The goal is to reduce automatic behaviour, not use shame or unrealistic restrictions.</p>
+<div class="field"><label>Screen time today (hours)</label><input type="number" id="screenTime" min="0" step=".1" placeholder="e.g. 4.5"></div>
+<div class="field"><label>Most distracting app or trigger</label><input type="text" id="trigger" placeholder="e.g. short videos, boredom, late night"></div>
+<div class="field"><label>One boundary for tomorrow</label><input type="text" id="boundary" placeholder="e.g. phone outside study area"></div>
+<button class="primary" onclick="saveHabits()">Save habit log</button>
+<h3>Daily habit checklist</h3>
+<div id="habitChecks"></div>
+<h3>When an urge or boredom hits</h3><ol><li>Pause for 10 minutes before acting.</li><li>Change location and put the phone away.</li><li>Do a short replacement action: walk, shower, tidy your desk, or start a 10-minute study block.</li><li>If you slip, record the trigger and return to your routine without self-punishment.</li></ol>
+</div></section>
+
+<section id="review" class="panel">
+<div class="card"><h2>Weekly progress review</h2><div class="grid">
+<div class="field"><label>Body weight (kg)</label><input type="number" id="weight" step=".1" placeholder="77"></div>
+<div class="field"><label>Average sleep (hours)</label><input type="number" id="sleep" step=".1" placeholder="8"></div>
+<div class="field"><label>Strength workouts this week</label><input type="number" id="weeklyWorkouts" min="0"></div>
+<div class="field"><label>Average daily screen time</label><input type="number" id="weeklyScreen" step=".1"></div>
+</div><div class="field"><label>Biggest win</label><textarea id="win" rows="2"></textarea></div><div class="field"><label>Main weakness / obstacle</label><textarea id="obstacle" rows="2"></textarea></div><div class="field"><label>One adjustment for next week</label><textarea id="adjustment" rows="2"></textarea></div><button class="primary" onclick="saveReview()">Save weekly review</button></div>
+<div class="card"><h2>Data and privacy</h2><p class="muted">Your logs are stored in this browser on this device. They are not automatically synced or monitored. Export a backup regularly.</p><button class="secondary" onclick="exportData()">Export my data</button> <button class="secondary" onclick="clearData()">Clear all data</button></div>
+</section>
+</main><footer>Built for steady progress, not perfect streaks.</footer>
+<script>
+const $=id=>document.getElementById(id);
+const read=()=>JSON.parse(localStorage.getItem('transformationOS')||'{}');
+const data=read(); const save=()=>localStorage.setItem('transformationOS',JSON.stringify(data));
+const today=new Date().toISOString().slice(0,10);
+function put(k,v){data[k]=v;save();refresh()}
+function get(k,d=''){return data[k]??d}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const rotation={Monday:'GPSC: Indian Polity | BSc: Cell Biology',Tuesday:'GPSC: Indian History | BSc: Microbiology',Wednesday:'GPSC: Indian Geography | BSc: Biomolecules',Thursday:'GPSC: Indian Polity | BSc: Fundamental Chemistry',Friday:'GPSC: Gujarat GK | BSc: Cell Biology',Saturday:'GPSC: Indian Economy | BSc: Microbiology',Sunday:'GPSC: Weekly revision + mock test | BSc: Biomolecules revision'};
+function renderChecks(id,items,prefix){$(id).innerHTML=items.map((t,i)=>`<div class="row"><label for="${prefix}${i}">${t}</label><input type="checkbox" id="${prefix}${i}" ${get(prefix+i,false)?'checked':''} onchange="put('${prefix+i}',this.checked)"></div>`).join('')}
+
+const workouts = {
+  0:{title:'Rest and reset',focus:'Recovery day. Let your muscles adapt.',items:[
+    ['Easy walk','15-30 minutes at a comfortable pace.'],
+    ['Gentle mobility','5-8 minutes: shoulder circles, hip circles and easy stretches.']
+  ]},
+  1:{title:'Upper A: chest, shoulders and triceps',focus:'Build pressing strength and upper-body width.',items:[
+    ['Push-ups','3 sets × 6-12 reps. Keep body straight; lower under control. Use an incline against a sturdy counter if needed.'],
+    ['Pike push-ups','2 sets × 5-10 reps. Hips high, head moves toward the floor between hands.'],
+    ['Backpack floor press','3 sets × 8-12 reps. Lie on the floor and press a securely packed backpack upward.'],
+    ['Backpack lateral raises','2 sets × 12-20 reps. Use very light bottles; lift only to shoulder height without swinging.'],
+    ['Close-grip incline push-ups','2 sets × 6-12 reps. Hands a little narrower, elbows controlled.']
+  ]},
+  2:{title:'Lower A: legs and core',focus:'Build balanced legs and trunk strength.',items:[
+    ['Bodyweight squats','3 sets × 10-15 reps. Sit between hips, keep heels down.'],
+    ['Reverse lunges','3 sets × 8-10 each leg. Step back and lower with control.'],
+    ['Glute bridges','3 sets × 12-20 reps. Squeeze glutes at the top.'],
+    ['Calf raises','3 sets × 15-25 reps. Pause briefly at the top.'],
+    ['Dead bug','3 sets × 8-10 each side. Keep lower back gently against the floor.'],
+    ['Plank','2 sets × 20-40 seconds. Keep ribs down and body straight.']
+  ]},
+  3:{title:'Recovery: walk and mobility',focus:'Keep moving without tiring the muscles.',items:[
+    ['Easy walk','20-30 minutes, conversational pace.'],
+    ['Mobility flow','2 gentle rounds: cat-cow × 8, arm circles × 10, hip hinges × 10, ankle rocks × 10 each side.']
+  ]},
+  4:{title:'Upper B: back, shoulders and biceps',focus:'Prioritise pulling and upper-back development.',items:[
+    ['One-arm backpack rows','3 sets × 10-15 each side. Support one hand on a sturdy chair; pull backpack toward hip.'],
+    ['Backpack bent-over rows','3 sets × 10-15 reps. Hinge at hips, keep back neutral, pull toward lower ribs.'],
+    ['Prone Y-T raises','2 rounds × 8 each shape. Lie face down and raise arms gently; no shrugging.'],
+    ['Backpack curls','3 sets × 10-15 reps. Keep elbows near sides and avoid swinging.'],
+    ['Reverse snow angels','2 sets × 10-12 reps. Lie face down and sweep arms slowly through a comfortable range.']
+  ]},
+  5:{title:'Lower B: legs and core',focus:'Train legs from different angles and strengthen the core.',items:[
+    ['Backpack squats','3 sets × 8-12 reps. Hold a light backpack close to chest.'],
+    ['Romanian deadlift with backpack','3 sets × 10-15 reps. Soft knees, push hips back, keep backpack close.'],
+    ['Split squats','2 sets × 8-10 each leg. Use a wall for balance if needed.'],
+    ['Single-leg glute bridge','2 sets × 8-12 each leg. Keep hips level.'],
+    ['Bird dog','2 sets × 8-10 each side. Reach opposite arm and leg without twisting.'],
+    ['Side plank','2 sets × 15-30 seconds each side.']
+  ]},
+  6:{title:'Full body: controlled practice',focus:'Moderate effort. Do not train to failure.',items:[
+    ['Incline or standard push-ups','2 sets × 6-12 reps. Choose a variation with clean form.'],
+    ['Backpack rows','2 sets × 10-15 reps. Pull smoothly, pause briefly.'],
+    ['Bodyweight squats','2 sets × 12-15 reps. Controlled tempo.'],
+    ['Backpack Romanian deadlift','2 sets × 10-12 reps. Hinge at hips, neutral back.'],
+    ['Calf raises','2 sets × 15-20 reps. Full comfortable range.'],
+    ['Plank','2 sets × 20-40 seconds. Stop before form breaks.']
+  ]}
+};
+function humanFigure(type){
+ const skin='#d6a078', shirt='#3157c8', shorts='#243b78', line='#172033';
+ const head=(x,y)=>`<circle cx="${x}" cy="${y}" r="9" fill="${skin}" stroke="${line}" stroke-width="1.5"/>`;
+ const limb=(d,w=9)=>`<path d="${d}" fill="none" stroke="${skin}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+ const body=(d)=>`<path d="${d}" fill="${shirt}" stroke="${line}" stroke-width="1.5" stroke-linejoin="round"/>`;
+ const ground='<path d="M8 143H232" stroke="#a8b3c5" stroke-width="3" stroke-linecap="round"/>';
+ let figure='';
+ if(type==='push'||type==='plank'){
+   figure=`${head(43,65)}${body('M52 66 Q78 61 111 76 L106 91 Q78 82 55 84 Z')}${limb('M59 81 L38 103 L25 133',8)}${limb('M103 84 L127 105 L145 132',8)}${limb('M25 133 L16 138 M145 132 L155 138',6)}${limb('M55 84 L78 106 L112 111',8)}`;
+ } else if(type==='pike'){
+   figure=`${head(47,99)}${body('M57 91 Q82 74 112 48 L126 61 Q94 94 66 109 Z')}${limb('M64 105 L44 128 L28 136',8)}${limb('M112 54 L143 91 L159 132',8)}${limb('M28 136 L18 139 M159 132 L169 138',6)}`;
+ } else if(type==='squat'){
+   figure=`${head(112,18)}${body('M101 29 Q116 25 127 35 L132 68 Q116 76 97 66 Z')}${limb('M101 42 L76 52 L55 43',8)}${limb('M127 43 L151 54 L171 44',8)}${limb('M103 68 L79 91 L105 113 L104 136',10)}${limb('M126 68 L151 91 L178 91 L194 124',10)}${limb('M104 136 L91 138 M194 124 L207 130',7)}`;
+ } else if(type==='lunge'){
+   figure=`${head(111,17)}${body('M100 29 Q115 25 127 35 L132 68 Q116 76 97 66 Z')}${limb('M101 42 L78 56 L58 48',8)}${limb('M127 43 L149 54 L168 47',8)}${limb('M104 68 L83 91 L62 113 L40 132',10)}${limb('M126 68 L149 88 L174 89 L195 127',10)}${limb('M40 132 L27 137 M195 127 L209 132',7)}`;
+ } else if(type==='bridge'){
+   figure=`${head(34,112)}${body('M43 105 Q76 87 105 105 L137 120 L125 132 L85 119 L48 121 Z')}${limb('M120 120 L155 96 L180 99 L196 132',10)}${limb('M95 116 L115 137',8)}${limb('M196 132 L209 137',7)}`;
+ } else if(type==='hinge'){
+   figure=`${head(73,27)}${body('M80 37 Q100 37 120 55 L111 72 Q92 60 73 57 Z')}${limb('M84 48 L57 72 L43 97',8)}${limb('M110 62 L135 83 L152 99',8)}${limb('M108 69 L99 105 L83 135',10)}${limb('M130 83 L157 105 L177 134',10)}${limb('M83 135 L71 139 M177 134 L190 139',7)}`;
+ } else if(type==='raise'){
+   figure=`${head(120,17)}${body('M108 29 Q122 25 134 35 L137 72 Q120 79 103 70 Z')}${limb('M108 42 L80 23 L58 15',8)}${limb('M134 42 L161 23 L184 15',8)}${limb('M108 70 L103 111 L98 137',10)}${limb('M133 70 L140 111 L145 137',10)}${limb('M98 137 L87 139 M145 137 L156 139',7)}`;
+ } else if(type==='core'){
+   figure=`${head(41,91)}${body('M50 91 Q72 77 97 93 L110 105 L95 116 L65 108 Z')}${limb('M63 105 L47 126 L30 135',8)}${limb('M96 108 L117 124 L137 134',8)}${limb('M78 104 L82 78 L102 66',8)}${limb('M102 66 L117 60',7)}`;
+ } else {
+   figure=`${head(112,18)}${body('M102 29 Q116 25 128 35 L132 68 Q116 76 98 66 Z')}${limb('M104 42 L82 58 L66 47',8)}${limb('M128 42 L148 56 L163 44',8)}${limb('M104 68 L84 94 L67 125',10)}${limb('M127 68 L149 91 L170 119',10)}${limb('M67 125 L55 132 M170 119 L183 127',7)}`;
+ }
+ return `<svg viewBox="0 0 240 150" role="img" aria-label="Human figure demonstrating ${type}">${ground}${figure}</svg>`;
+}
+const exerciseArt={push:humanFigure('push'),pike:humanFigure('pike'),squat:humanFigure('squat'),lunge:humanFigure('lunge'),hinge:humanFigure('hinge'),bridge:humanFigure('bridge'),plank:humanFigure('plank'),raise:humanFigure('raise'),core:humanFigure('core'),walk:humanFigure('walk')};
+function artType(name){let n=name.toLowerCase();if(/pike/.test(n))return 'pike';if(/push|press/.test(n))return 'push';if(/lunge|split/.test(n))return 'lunge';if(/squat/.test(n))return 'squat';if(/row|deadlift|hinge|curl/.test(n))return 'hinge';if(/bridge/.test(n))return 'bridge';if(/plank|dead bug|bird dog/.test(n))return /plank/.test(n)?'plank':'core';if(/raise|snow angel|y-t/.test(n))return 'raise';return 'walk'}
+function exerciseCard(it,i){let art=exerciseArt[artType(it[0])];return `<article class="exercise"><div class="exercise-art">${art}</div><div><b>${i+1}. ${it[0]}</b><div class="muted">${it[1]}</div></div></article>`}
+function renderDailyWorkout(){
+ const d=new Date().getDay(), w=workouts[d];
+ $('workoutDayTitle').textContent=w.title;$('workoutDayFocus').textContent=w.focus;
+ let cut=Math.ceil(w.items.length/2), first=w.items.slice(0,cut), second=w.items.slice(cut);
+ if(d===0){first=[w.items[0]];second=[w.items[1]];}
+ $('morningWorkoutList').innerHTML=first.map(exerciseCard).join('');
+ $('eveningWorkoutList').innerHTML=second.map((it,i)=>exerciseCard(it,i+first.length-1)).join('') || '<p class="muted">No second strength block today. Keep this time for gentle recovery.</p>';
+ const opts=['Rest day','Upper A','Lower A','Recovery / mobility','Upper B','Lower B','Full body'];
+ $('workoutType').value=opts[d];
+}
+
+function refresh(){
+$('studyStat').textContent=((get('studyTotal',0)/60).toFixed(1))+'h';
+$('workoutStat').textContent=get('lastWorkoutDate')===today?'Logged':'Not done';
+$('proteinStat').textContent=get('proteinToday',0)+' g';
+$('screenStat').textContent=get('screenToday')!==undefined?get('screenToday')+'h':'Not logged';
+$('todaySubjects').textContent=rotation[dayNames[new Date().getDay()]];
+$('todayWorkout').checked=!!get('todayWorkout');$('todayProtein').checked=!!get('todayProtein');$('todayPhone').checked=!!get('todayPhone');$('todaySleep').checked=!!get('todaySleep');
+$('dailyNote').value=get('note_'+today,'');
+$('gpscMin').value='';$('bscMin').value='';$('studyTopic').value='';
+$('rotation').innerHTML=Object.entries(rotation).map(([d,v])=>`<div class="row"><b>${d}</b><span class="muted">${v}</span></div>`).join('');
+renderChecks('fitnessChecks',['Strength session 1','Strength session 2','Strength session 3','Mobility or easy walk'], 'fit_');
+renderChecks('habitChecks',['No phone during focused study blocks','Avoided endless scrolling','Used a planned replacement when bored','Kept a consistent wind-down routine'], 'habit_');
+}
+['todayWorkout','todayProtein','todayPhone','todaySleep'].forEach(id=>$(id).onchange=()=>put(id,$(id).checked));
+function saveNote(){put('note_'+today,$('dailyNote').value)}
+function saveStudy(){let g=+$('gpscMin').value||0,b=+$('bscMin').value||0;if(!g&&!b){$('studyFeedback').textContent='Enter at least one study duration.';return}data.studyTotal=(get('studyTotal',0)+g+b);data.studyLogs=get('studyLogs',[]);data.studyLogs.push({date:today,gpsc:g,bsc:b,topic:$('studyTopic').value});save();$('studyFeedback').textContent=`Saved ${g+b} focused minutes.`;refresh()}
+function saveWorkout(){data.lastWorkoutDate=today;data.workoutLogs=get('workoutLogs',[]);data.workoutLogs.push({date:today,session:$('workoutSession').value,type:$('workoutType').value,details:$('workoutDetails').value,duration:+$('workoutDuration').value||0,effort:+$('workoutEffort').value||0});save();$('workoutFeedback').textContent='Workout saved.';refresh()}
+function saveNutrition(){data.proteinToday=+$('protein').value||0;data.waterToday=+$('water').value||0;data.foodNote=$('foodNote').value;save();refresh()}
+function saveHabits(){data.screenToday=+$('screenTime').value||0;data.trigger=$('trigger').value;data.boundary=$('boundary').value;save();refresh()}
+function saveReview(){data.review={weight:$('weight').value,sleep:$('sleep').value,weeklyWorkouts:$('weeklyWorkouts').value,weeklyScreen:$('weeklyScreen').value,win:$('win').value,obstacle:$('obstacle').value,adjustment:$('adjustment').value,date:today};save();alert('Weekly review saved.')}
+function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='transformation-backup.json';a.click();URL.revokeObjectURL(a.href)}
+function clearData(){if(confirm('Delete all locally stored progress?')){localStorage.removeItem('transformationOS');location.reload()}}
+renderDailyWorkout();
+refresh();
+</script></body></html>
